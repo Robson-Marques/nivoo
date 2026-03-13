@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔊 Teste Avançado - Sistema de Som</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .section h2 {
+      color: #667eea;
+      font-size: 16px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+    
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-danger {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #ff5252;
+    }
+    
+    .console {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      height: 250px;
+      overflow-y: auto;
+      border: 2px solid #333;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+    
+    .console-line {
+      margin: 2px 0;
+      word-break: break-all;
+    }
+    
+    .log-info { color: #00ff00; }
+    .log-success { color: #00ff00; font-weight: bold; }
+    .log-warning { color: #ffaa00; }
+    .log-error { color: #ff5555; font-weight: bold; }
+    .log-separator { color: #666; text-align: center; margin: 10px 0; }
+    
+    .status {
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    
+    .status-loading {
+      background: #fff3cd;
+      color: #856404;
+      border: 2px solid #ffc107;
+    }
+    
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 2px solid #28a745;
+    }
+    
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+    }
+    
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #004085;
+    }
+    
+    .test-steps {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    
+    .test-steps ol {
+      margin-left: 20px;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+    
+    .test-steps li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔊 Teste Avançado - Sistema de Som</h1>
+    <p class="subtitle">Simula exatamente como o sistema de notificações funciona</p>
+    
+    <!-- SEÇÃO 1: Testes Básicos -->
+    <div class="section">
+      <h2>📋 1. TESTE BÁSICO - Arquivo de Áudio</h2>
+      <div class="button-group">
+        <button class="btn-primary" onclick="testAudioFile()">✅ Testar Arquivo</button>
+        <button class="btn-secondary" onclick="checkAudioPath()">🔍 Verificar Caminho</button>
+      </div>
+      <div class="info-box">
+        Valida se o arquivo <code>/audionot/notification.mp3</code> é acessível
+      </div>
+    </div>
+    
+    <!-- SEÇÃO 2: Testes de Criação de Áudio -->
+    <div class="section">
+      <h2>🎧 2. TESTE CRIAÇÃO - Elemento Audio</h2>
+      <div class="button-group">
+        <button class="btn-primary" onclick="createAudioElement()">🔧 Criar Elemento</button>
+        <button class="btn-secondary" onclick="getAudioStatus()">📊 Status Atual</button>
+      </div>
+      <div class="info-box">
+        Testa se conseguimos criar um elemento Audio DOM e carregá-lo
+      </div>
+    </div>
+    
+    <!-- SEÇÃO 3: Teste de Reprodução -->
+    <div class="section">
+      <h2>🔊 3. TESTE REPRODUÇÃO - Tocar Áudio</h2>
+      <div class="button-group">
+        <button class="btn-primary" onclick="playAudio()">▶️ TOCAR</button>
+        <button class="btn-secondary" onclick="pauseAudio()">⏸️ PAUSAR</button>
+        <button class="btn-danger" onclick="stopAudio()">⏹️ PARAR</button>
+      </div>
+      <div class="info-box">
+        Toca o áudio e mostra todos os eventos no console abaixo
+      </div>
+    </div>
+    
+    <!-- SEÇÃO 4: Teste do Sistema Completo -->
+    <div class="section">
+      <h2>🚀 4. TESTE COMPLETO - Simular Notificação Real</h2>
+      <div class="button-group">
+        <button class="btn-primary" onclick="simulateNotification()">🔔 Simular Pedido</button>
+        <button class="btn-secondary" onclick="simulateMultiple()">🔔🔔🔔 Simular 3x</button>
+      </div>
+      <div class="info-box">
+        Simula EXATAMENTE como o hook <code>useNotifications</code> dispara o som
+      </div>
+      <div class="test-steps">
+        <ol>
+          <li>Clique em "Simular Pedido"</li>
+          <li>Observe os logs detalhados abaixo</li>
+          <li>Se o som toca → Sistema pode funcionar!</li>
+          <li>Se não toca → Problema está aqui (não na assinatura Supabase)</li>
+        </ol>
+      </div>
+    </div>
+    
+    <!-- CONSOLE -->
+    <div class="section">
+      <h2>📺 Console de Teste</h2>
+      <button class="btn-secondary" style="width: 100%;" onclick="clearConsole()">🗑️ Limpar Console</button>
+      <div id="console" class="console"></div>
+      <div id="status" class="status status-loading">⏳ Pronto para teste...</div>
+    </div>
+  </div>
+
+  <script>
+    let audioElement = null;
+    let consoleOutput = document.getElementById('console');
+    let statusEl = document.getElementById('status');
+    
+    function log(message, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `console-line log-${type}`;
+      line.textContent = message;
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+    
+    function separator(label = '') {
+      const line = document.createElement('div');
+      line.className = 'console-line log-separator';
+      line.textContent = `${'='.repeat(40)} ${label} ${'='.repeat(40)}`;
+      consoleOutput.appendChild(line);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    function setStatus(message, type = 'loading') {
+      statusEl.textContent = message;
+      statusEl.className = `status status-${type}`;
+    }
+    
+    function clearConsole() {
+      consoleOutput.innerHTML = '';
+      log('📝 Console limpo', 'info');
+    }
+    
+    function testAudioFile() {
+      separator('TESTE ARQUIVO');
+      log('🔍 Testando se arquivo é acessível...', 'info');
+      
+      fetch('/audionot/notification.mp3')
+        .then(r => {
+          if (r.ok) {
+            log(`✅ ARQUIVO ENCONTRADO! Status: ${r.status}`, 'success');
+            log(`📊 Tamanho: ${r.headers.get('content-length')} bytes`, 'success');
+            setStatus('✅ Arquivo está acessível!', 'success');
+          } else {
+            log(`❌ ARQUIVO NÃO ENCONTRADO! Status: ${r.status}`, 'error');
+            setStatus(`❌ Erro ${r.status}: Arquivo não encontrado`, 'error');
+          }
+        })
+        .catch(e => {
+          log(`❌ ERRO AO BUSCAR: ${e.message}`, 'error');
+          setStatus('❌ Erro ao acessar arquivo', 'error');
+        });
+    }
+    
+    function checkAudioPath() {
+      separator('VERIFICAR CAMINHO');
+      log('🔗 Caminho esperado: /audionot/notification.mp3', 'info');
+      log('📂 URL completa: ' + window.location.origin + '/audionot/notification.mp3', 'info');
+      log('💾 Diretório público: ' + window.location.origin + '/public/', 'info');
+      log('✅ Verifique se pasta existe em: <projeto>/public/audionot/', 'success');
+      setStatus('ℹ️ Caminho verificado (veja console)', 'loading');
+    }
+    
+    function createAudioElement() {
+      separator('CRIAR ELEMENTO AUDIO');
+      
+      try {
+        log('🔧 Criando novo Audio()...', 'info');
+        audioElement = new Audio();
+        log('✅ Objeto Audio criado', 'success');
+        
+        log('📝 Configurando src...', 'info');
+        audioElement.src = '/audionot/notification.mp3';
+        audioElement.volume = 1.0;
+        audioElement.preload = 'auto';
+        log('✅ src = /audionot/notification.mp3', 'success');
+        log('✅ volume = 1.0', 'success');
+        log('✅ preload = auto', 'success');
+        
+        // Listeners
+        audioElement.addEventListener('play', () => {
+          log('▶️ EVENTO: play disparado', 'success');
+        });
+        
+        audioElement.addEventListener('pause', () => {
+          log('⏸️ EVENTO: pause disparado', 'info');
+        });
+        
+        audioElement.addEventListener('ended', () => {
+          log('🛑 EVENTO: ended disparado', 'warning');
+        });
+        
+        audioElement.addEventListener('error', (e) => {
+          log(`❌ EVENTO: error disparado - Code: ${audioElement.error?.code}`, 'error');
+          log(`Mensagem: ${audioElement.error?.message}`, 'error');
+        });
+        
+        audioElement.addEventListener('loadstart', () => {
+          log('📥 EVENTO: loadstart (começou a carregar)', 'info');
+        });
+        
+        audioElement.addEventListener('canplay', () => {
+          log('✅ EVENTO: canplay (pronto para tocar)', 'success');
+        });
+        
+        log('🎧 3 eventos de áudio registrados', 'success');
+        log('📥 Carregando áudio com load()...', 'info');
+        
+        audioElement.load();
+        log('✅ load() executado', 'success');
+        
+        setStatus('✅ Elemento Audio criado e pronto!', 'success');
+      } catch (e) {
+        log(`❌ ERRO: ${e.message}`, 'error');
+        setStatus('❌ Erro ao criar elemento', 'error');
+      }
+    }
+    
+    function getAudioStatus() {
+      separator('STATUS DO ÁUDIO');
+      
+      if (!audioElement) {
+        log('❌ Nenhum elemento de áudio foi criado!', 'error');
+        log('ℹ️ Clique em "Criar Elemento" primeiro', 'info');
+        setStatus('⚠️ Crie um elemento primeiro', 'loading');
+        return;
+      }
+      
+      log(`📊 canPlayType: ${audioElement.canPlayType('audio/mpeg')}`, 'info');
+      log(`🔊 Volume: ${audioElement.volume * 100}%`, 'info');
+      log(`⏱️ Duração: ${audioElement.duration}s`, 'info');
+      log(`📍 CurrentTime: ${audioElement.currentTime}s`, 'info');
+      log(`🔁 Paused: ${audioElement.paused}`, 'info');
+      log(`🔗 Src: ${audioElement.src}`, 'info');
+      
+      setStatus('📊 Status mostrado no console', 'success');
+    }
+    
+    function playAudio() {
+      separator('TOCAR ÁUDIO');
+      
+      if (!audioElement) {
+        log('❌ Nenhum elemento! Clique em "Criar Elemento" primeiro', 'error');
+        setStatus('⚠️ Crie um elemento primeiro', 'loading');
+        return;
+      }
+      
+      try {
+        log('🎯 Resetando currentTime para 0...', 'info');
+        audioElement.currentTime = 0;
+        log('✅ Reset feito', 'success');
+        
+        log('▶️ Chamando play()...', 'info');
+        const playPromise = audioElement.play();
+        
+        if (playPromise !== undefined) {
+          log('📦 play() retornou uma Promise', 'info');
+          
+          playPromise
+            .then(() => {
+              log('✅ ✅ ✅ SUCESSO! ÁUDIO TOCANDO NOW! ✅ ✅ ✅', 'success');
+              setStatus('✅ ÁUDIO TOCANDO AGORA!', 'success');
+            })
+            .catch((err) => {
+              log(`❌ Promise rejeitada: ${err.name} - ${err.message}`, 'error');
+              setStatus('❌ Erro ao tocar', 'error');
+            });
+        } else {
+          log('✅ play() executado (sem Promise)', 'success');
+          setStatus('✅ Áudio iniciado', 'success');
+        }
+      } catch (e) {
+        log(`❌ ERRO: ${e.message}`, 'error');
+        setStatus('❌ Erro ao tocar', 'error');
+      }
+    }
+    
+    function pauseAudio() {
+      if (!audioElement) {
+        log('❌ Nenhum elemento de áudio', 'error');
+        return;
+      }
+      log('⏸️ Pausando áudio...', 'info');
+      audioElement.pause();
+      log('✅ Pausado', 'success');
+      setStatus('⏸️ Áudio pausado', 'loading');
+    }
+    
+    function stopAudio() {
+      if (!audioElement) {
+        log('❌ Nenhum elemento de áudio', 'error');
+        return;
+      }
+      log('⏹️ Parando áudio e resetando...', 'info');
+      audioElement.pause();
+      audioElement.currentTime = 0;
+      log('✅ Parado e resetado', 'success');
+      setStatus('⏹️ Áudio parado', 'loading');
+    }
+    
+    function simulateNotification() {
+      separator('SIMULAR NOTIFICAÇÃO ÚNICA');
+      log('🔔 Simulando recebimento de novo pedido #123...', 'warning');
+      
+      // Simular o que o hook faria
+      (async () => {
+        try {
+          if (!audioElement) {
+            log('🔧 Elemento não existe, criando...', 'info');
+            audioElement = new Audio();
+            audioElement.src = '/audionot/notification.mp3';
+            audioElement.volume = 1.0;
+            audioElement.preload = 'auto';
+            audioElement.addEventListener('play', () => log('▶️ play event', 'success'));
+            audioElement.addEventListener('error', () => log('❌ error event', 'error'));
+            log('✅ Elemento criado', 'success');
+          }
+          
+          log('⏱️ Resetando currentTime...', 'info');
+          audioElement.currentTime = 0;
+          
+          log('🎵 Chamando play()...', 'info');
+          const result = await audioElement.play();
+          
+          log('✅ ✅ ✅ NOTIFICAÇÃO DISPARADA COM SUCESSO! ✅ ✅ ✅', 'success');
+          setStatus('✅ NOTIFICAÇÃO TOCANDO!', 'success');
+        } catch (e) {
+          log(`❌ ERRO NA NOTIFICAÇÃO: ${e.message}`, 'error');
+          setStatus(`❌ Erro: ${e.message}`, 'error');
+        }
+      })();
+    }
+    
+    function simulateMultiple() {
+      separator('SIMULAR 3 NOTIFICAÇÕES SEGUIDAS');
+      log('🔔🔔🔔 Simulando 3 novos pedidos...', 'warning');
+      
+      // Primeira
+      setTimeout(() => {
+        log('1️⃣ Pedido #100 chegou', 'info');
+        simulateAudio();
+      }, 100);
+      
+      // Segunda
+      setTimeout(() => {
+        log('2️⃣ Pedido #101 chegou', 'info');
+        simulateAudio();
+      }, 1500);
+      
+      // Terceira
+      setTimeout(() => {
+        log('3️⃣ Pedido #102 chegou', 'info');
+        simulateAudio();
+      }, 3000);
+      
+      async function simulateAudio() {
+        try {
+          if (!audioElement) {
+            audioElement = new Audio('/audionot/notification.mp3');
+            audioElement.volume = 1.0;
+          }
+          audioElement.currentTime = 0;
+          await audioElement.play();
+          log('✅ Som disparado', 'success');
+        } catch (e) {
+          log(`❌ Erro: ${e.message}`, 'error');
+        }
+      }
+    }
+    
+    // Inicializar
+    window.addEventListener('load', () => {
+      log('🚀 Tester iniciado!', 'info');
+      log('📋 Escolha um teste acima para começar', 'info');
+    });
+  </script>
+</body>
+</html>

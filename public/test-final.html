@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔊 Teste Final - Som no Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #00d4ff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #0f1929;
+      border: 3px solid #00ff88;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 0 40px rgba(0,255,136,0.25);
+    }
+    h1 {
+      color: #00ff88;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 28px;
+      text-shadow: 0 0 10px #00ff88;
+    }
+    .subtitle {
+      text-align: center;
+      color: #00d4ff;
+      margin-bottom: 30px;
+    }
+    .status-box {
+      background: #1a1a2e;
+      border-left: 5px solid #00ff88;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    .status-box strong { color: #00ff88; }
+    button {
+      width: 100%;
+      padding: 16px;
+      margin: 15px 0;
+      background: linear-gradient(135deg, #00ff88 0%, #00cc99 100%);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #00ffaa 0%, #00ddbb 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,255,136,0.3);
+    }
+    .log {
+      background: #000;
+      border: 2px solid #00ff88;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      height: 250px;
+      overflow-y: auto;
+      color: #00ff88;
+      line-height: 1.5;
+    }
+    .log-line { margin: 3px 0; }
+    .success { color: #00ff88; }
+    .info { color: #00d4ff; }
+    .warning { color: #ffaa00; }
+    .error { color: #ff4444; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✅ TESTE FINAL - Som no Dashboard</h1>
+    <div class="subtitle">Simule uma notificação chegando</div>
+
+    <div class="status-box">
+      <strong>✨ MUDANÇA APLICADA:</strong><br><br>
+      initializeAudioPrimer() agora simula uma interação após 100ms<br>
+      Isso "debloqueia" o autoplay do navegador automaticamente<br>
+      <br>
+      Quando notificação chegar, som DEVE tocar!
+    </div>
+
+    <div class="status-box" style="border-left-color:#ffaa00;">
+      <strong>📋 PASSO A PASSO:</strong><br><br>
+      1️⃣ Abra DevTools (F12) e vá para Console<br>
+      2️⃣ Veja os logs de inicialização<br>
+      3️⃣ Clique em "Simular Notificação"<br>
+      4️⃣ ESCUTE - você deve ouvir o som automaticamente!
+    </div>
+
+    <button onclick="simulateNotificationWithAudio()">
+      🔔 SIMULAR NOTIFICAÇÃO (COM SOM)
+    </button>
+
+    <button onclick="testRealNotification()">
+      📱 Ir para DASHBOARD (Criar pedido real)
+    </button>
+
+    <button onclick="clearLog()">
+      🗑️ Limpar Logs
+    </button>
+
+    <h2 style="color:#00d4ff; margin-top:30px;">📊 Saída:</h2>
+    <div class="log" id="log"></div>
+  </div>
+
+  <audio id="notification-audio" src="/audionot/notification.mp3" preload="auto" style="display:none;"></audio>
+
+  <script>
+    const logDiv = document.getElementById('log');
+
+    function addLog(msg, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line ${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logDiv.appendChild(line);
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(`[${type}]`, msg);
+    }
+
+    function clearLog() {
+      logDiv.innerHTML = '';
+      addLog('Log limpo', 'info');
+    }
+
+    function simulateNotificationWithAudio() {
+      addLog('====== SIMULANDO NOTIFICAÇÃO ======', 'warning');
+      
+      // Simular o que App.tsx faz
+      addLog('1️⃣ [Simulando] initializeAudioPrimer() em App.tsx', 'info');
+      
+      const audio = document.getElementById('notification-audio');
+      if (!audio) {
+        addLog('❌ Audio element não encontrado!', 'error');
+        return;
+      }
+
+      addLog(`✅ Audio element encontrado: ${audio.id}`, 'success');
+      addLog(`✅ Src: ${audio.src}`, 'success');
+      addLog(`✅ Volume: ${audio.volume}`, 'success');
+
+      // Simular primeiro clique (o que initializeAudioPrimer faz após 100ms)
+      const clickEvent = new MouseEvent('click', { bubbles: true });
+      document.dispatchEvent(clickEvent);
+      
+      addLog('2️⃣ [Simulado] Clique automático disparado', 'success');
+      
+      addLog('⏳ Aguardando 300ms antes de tocar...', 'info');
+      
+      setTimeout(() => {
+        addLog('3️⃣ [Simulando] Notificação chega do Supabase', 'warning');
+        audio.currentTime = 0;
+        audio.volume = 1.0;
+        
+        addLog('🔊 Chamando audio.play()', 'info');
+        
+        const promise = audio.play();
+        if (promise !== undefined) {
+          promise
+            .then(() => {
+              addLog('✅ ✅ ✅ SOM TOCANDO AGORA! ✅ ✅ ✅', 'success');
+              addLog('', 'success');
+              addLog('Se você ouviu = PROBLEMA RESOLVIDO!', 'success');
+              addLog('Se não ouviu = Pode ser arquivo MP3', 'warning');
+            })
+            .catch(err => {
+              addLog(`❌ Erro: ${err.name}`, 'error');
+              addLog('Ainda há problema com autoplay', 'error');
+            });
+        }
+      }, 300);
+
+      addLog('====== FIM DA SIMULAÇÃO ======', 'warning');
+    }
+
+    function testRealNotification() {
+      addLog('🚀 Redirecionando para Dashboard...', 'info');
+      window.location.href = 'http://localhost:8080/login';
+    }
+
+    // Log inicial
+    addLog('✅ Página de teste carregada', 'success');
+    addLog('Clique em um dos botões para testar', 'info');
+  </script>
+</body>
+</html>

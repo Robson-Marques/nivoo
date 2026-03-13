@@ -1,0 +1,77 @@
+/* ProductGallery.module.css */
+/* Estilos para galeria de imagens avançada */
+
+/* Garantir que imagens escadona suavemente */
+.gallery-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background-color: #f3f4f6;
+}
+
+.gallery-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 300ms ease-in-out;
+}
+
+.gallery-thumbnail-active {
+  border: 2px solid #3b82f6;
+  transform: scale(1);
+}
+
+.gallery-thumbnail {
+  border: 2px solid #e5e7eb;
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
+}
+
+.gallery-thumbnail:hover {
+  border-color: #d1d5db;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .gallery-container {
+    aspect-ratio: 1;
+  }
+
+  .gallery-thumbnails {
+    gap: 0.5rem;
+  }
+
+  .gallery-thumbnail {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-thumbnail {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery-image-loading {
+  animation: fadeIn 200ms ease-in-out;
+}
+
+/* Acessibilidade */
+.gallery-container:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

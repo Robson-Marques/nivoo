@@ -1,0 +1,156 @@
+/* ProductEnhancedDisplay.module.css */
+/* Estilos para recursos avançados: badges, trust triggers, etc. */
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trust-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.375rem;
+}
+
+.trust-trigger-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.trust-trigger-text {
+  font-size: 0.875rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.warranty-section {
+  padding: 0.75rem;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.375rem;
+}
+
+.warranty-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.warranty-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 0.25rem;
+}
+
+.warranty-text {
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+
+.highlights-section {
+  border-left: 4px solid #3b82f6;
+  padding-left: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.highlight-item-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #eab308;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.highlight-item-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.stock-warning {
+  padding: 0.5rem;
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stock-warning-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #92400e;
+  flex-shrink: 0;
+}
+
+.stock-warning-text {
+  font-size: 0.875rem;
+  color: #b45309;
+}
+
+.expanded-details-modal {
+  max-width: 40rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.expanded-details-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #374151;
+  line-height: 1.6;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .badge-container {
+    gap: 0.375rem;
+  }
+
+  .trust-trigger {
+    padding: 0.375rem;
+    font-size: 0.8125rem;
+  }
+
+  .warranty-section {
+    padding: 0.5rem;
+  }
+
+  .highlights-section {
+    border-left-width: 3px;
+    padding-left: 0.5rem;
+  }
+}
+
+/* Animation for modal entrance */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.enhanced-display-container {
+  animation: slideUp 300ms ease-out;
+}

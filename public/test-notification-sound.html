@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔊 Teste de Som - Notificação</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    h1 {
+      color: #667eea;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    .log {
+      background: #1e1e1e;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      height: 200px;
+      overflow-y: auto;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+    
+    .log-line {
+      margin: 3px 0;
+    }
+    
+    .success {
+      color: #00ff00;
+    }
+    
+    .error {
+      color: #ff5555;
+    }
+    
+    .info {
+      color: #00ccff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔊 Teste de Som de Notificação</h1>
+    
+    <div class="section">
+      <h2>1️⃣ Teste Arquivo</h2>
+      <button class="btn-primary" onclick="testFile()">Verificar se arquivo existe</button>
+    </div>
+    
+    <div class="section">
+      <h2>2️⃣ Teste Simples</h2>
+      <button class="btn-primary" onclick="playSimple()">TOCAR SOM (direto)</button>
+      <button class="btn-secondary" onclick="testCanPlay()">Verificar compatibilidade</button>
+    </div>
+    
+    <div class="section">
+      <h2>3️⃣ Teste Com Prep</h2>
+      <p>⬇️ Clique aqui primeiro ⬇️</p>
+      <button class="btn-primary" onclick="setupAndPlay()">PREPARAR + TOCAR</button>
+    </div>
+    
+    <div class="section">
+      <h2>4️⃣ Teste Múltiplo</h2>
+      <button class="btn-primary" onclick="playMultiple()">Tocar 3 vezes</button>
+    </div>
+    
+    <div class="section">
+      <h2>Console</h2>
+      <button class="btn-secondary" onclick="clearLog()">Limpar</button>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <audio id="notification-audio" src="/audionot/notification.mp3" preload="auto" style="display:none;">
+  </audio>
+
+  <script>
+    const log = document.getElementById('log');
+    
+    function addLog(message, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line ${type}`;
+      line.textContent = message;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+      console.log(`[${type}]`, message);
+    }
+    
+    function clearLog() {
+      log.innerHTML = '';
+      addLog('Log limpo', 'info');
+    }
+    
+    async function testFile() {
+      addLog('🔍 Testando arquivo...', 'info');
+      try {
+        const response = await fetch('/audionot/notification.mp3');
+        if (response.ok) {
+          const size = response.headers.get('content-length');
+          addLog(`✅ Arquivo encontrado! Tamanho: ${size} bytes`, 'success');
+        } else {
+          addLog(`❌ Arquivo retornou: ${response.status}`, 'error');
+        }
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+    
+    function getAudio() {
+      let audio = document.getElementById('notification-audio');
+      if (!audio) {
+        addLog('❌ Elemento audio não encontrado no HTML', 'error');
+        addLog('Criando novo...', 'info');
+        audio = document.createElement('audio');
+        audio.src = '/audionot/notification.mp3';
+        document.body.appendChild(audio);
+      }
+      return audio;
+    }
+    
+    function testCanPlay() {
+      const audio = getAudio();
+      addLog('📊 Verificando compatibilidade...', 'info');
+      addLog(`canPlayType("audio/mpeg"): ${audio.canPlayType('audio/mpeg')}`, 'info');
+      addLog(`Volume: ${audio.volume}`, 'info');
+      addLog(`Paused: ${audio.paused}`, 'info');
+      addLog(`Src: ${audio.src}`, 'success');
+    }
+    
+    function playSimple() {
+      const audio = getAudio();
+      addLog('▶️ Tocando som...', 'info');
+      addLog('Volume ANTES: ' + audio.volume, 'info');
+      
+      audio.currentTime = 0;
+      audio.volume = 1.0; // Máximo
+      
+      addLog('Volume DEPOIS: ' + audio.volume, 'info');
+      
+      // Adicionar listeners de evento
+      const onPlay = () => {
+        addLog('▶️ [EVENT] play acionado', 'success');
+      };
+      const onPlaying = () => {
+        addLog('▶️ [EVENT] playing - REALMENTE TOCANDO!', 'success');
+      };
+      const onEnded = () => {
+        addLog('🛑 [EVENT] ended', 'info');
+      };
+      
+      audio.addEventListener('play', onPlay);
+      audio.addEventListener('playing', onPlaying);
+      audio.addEventListener('ended', onEnded);
+      
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => {
+            addLog('✅ PROMISE - SOM DEVE ESTAR TOCANDO!', 'success');
+            // Tentar beep de fallback também
+            tryBeep();
+          })
+          .catch((err) => {
+            addLog(`❌ Erro: ${err.name} - ${err.message}`, 'error');
+            addLog('Tentando beep de fallback...', 'info');
+            tryBeep();
+          });
+      } else {
+        addLog('✅ Audio tocando (sem promise)', 'success');
+      }
+    }
+    
+    function tryBeep() {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+          addLog('🔊 AudioContext resumido', 'info');
+        }
+        
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        
+        osc.start(now);
+        osc.stop(now + 0.1);
+        
+        addLog('🔊 BEEP de fallback tocado', 'success');
+      } catch (e) {
+        addLog('❌ Erro ao fazer beep: ' + (e as any).message, 'error');
+      }
+    }
+    
+    function setupAndPlay() {
+      const audio = getAudio();
+      addLog('🔧 Preparando áudio...', 'info');
+      
+      audio.currentTime = 0;
+      audio.volume = 1.0;
+      
+      // Fazer um play silencioso primeiro
+      audio.play()
+        .then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          addLog('✅ Áudio preparado!', 'success');
+          addLog('▶️ Agora tocando...', 'info');
+          
+          // Agora tocar de verdade
+          audio.play()
+            .then(() => {
+              addLog('✅ SOM TOCOU!', 'success');
+            })
+            .catch((err) => {
+              addLog(`❌ Erro em play: ${err.name}`, 'error');
+            });
+        })
+        .catch((err) => {
+          addLog(`❌ Erro na preparação: ${err.name}`, 'error');
+        });
+    }
+    
+    function playMultiple() {
+      const audio = getAudio();
+      addLog('🔔🔔🔔 Tocando 3 vezes...', 'info');
+      
+      let count = 0;
+      function playOne() {
+        if (count >= 3) {
+          addLog('✅ Feito! Tocou 3 vezes', 'success');
+          return;
+        }
+        
+        count++;
+        addLog(`Tocando #${count}...`, 'info');
+        
+        audio.currentTime = 0;
+        audio.volume = 1.0;
+        
+        audio.play()
+          .then(() => {
+            addLog(`✅ Toque #${count} OK`, 'success');
+          })
+          .catch((err) => {
+            addLog(`❌ Toque #${count} erro: ${err.name}`, 'error');
+          });
+        
+        setTimeout(playOne, 1500);
+      }
+      
+      playOne();
+    }
+    
+    // Log inicial
+    addLog('🔊 Página de teste carregada', 'info');
+    addLog('Clique em um botão para testar', 'info');
+  </script>
+</body>
+</html>

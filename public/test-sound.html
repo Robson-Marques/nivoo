@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de Som - DeliveryMax</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f5f5;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-play {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-play:hover {
+            background: #16a34a;
+        }
+        .btn-stop {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-stop:hover {
+            background: #dc2626;
+        }
+        .btn-preload {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-preload:hover {
+            background: #2563eb;
+        }
+        .log {
+            margin-top: 30px;
+            background: #1f2937;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            min-width: 400px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #374151;
+        }
+        .log-entry.error {
+            color: #ef4444;
+        }
+        .log-entry.success {
+            color: #10b981;
+        }
+        .log-entry.info {
+            color: #60a5fa;
+        }
+        .file-check {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 4px;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 Teste de Som de Notificação</h1>
+        
+        <div class="button-group">
+            <button class="btn-preload" onclick="preloadSound()">PRÉ-CARREGAR</button>
+            <button class="btn-play" onclick="playSound()">TOCAR SOM</button>
+            <button class="btn-stop" onclick="stopSound()">PARAR</button>
+            <button class="btn-play" onclick="checkFile()">VERIFICAR ARQUIVO</button>
+        </div>
+
+        <div class="file-check" id="fileCheck"></div>
+
+        <div class="log">
+            <div class="log-entry info">🔊 Logs do Sistema:</div>
+            <div id="logOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        const SOUND_PATH = '/audionot/notification.mp3';
+        let audioElement = null;
+
+        function log(message, type = 'info') {
+            const logOutput = document.getElementById('logOutput');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logOutput.appendChild(entry);
+            logOutput.parentElement.scrollTop = logOutput.parentElement.scrollHeight;
+        }
+
+        function createAudioElement() {
+            if (audioElement) {
+                return audioElement;
+            }
+            log('🔊 Criando elemento de áudio', 'info');
+            audioElement = new Audio();
+            audioElement.src = SOUND_PATH;
+            audioElement.volume = 1.0;
+            
+            audioElement.addEventListener('play', () => {
+                log('✅ ÁUDIO COMEÇOU A TOCAR!', 'success');
+            });
+            
+            audioElement.addEventListener('ended', () => {
+                log('🛑 ÁUDIO TERMINOU', 'info');
+            });
+            
+            audioElement.addEventListener('error', (e) => {
+                log(`❌ ERRO: ${audioElement.error?.message}`, 'error');
+                log(`Código: ${audioElement.error?.code}`, 'error');
+                log(`Caminho: ${audioElement.src}`, 'error');
+            });
+            
+            return audioElement;
+        }
+
+        function preloadSound() {
+            log('🔊 PRÉ-CARREGANDO SOM...', 'info');
+            const audio = createAudioElement();
+            audio.load();
+            log('✅ SOM PRÉ-CARREGADO', 'success');
+        }
+
+        function playSound() {
+            log('🔊🔊🔊 TOCANDO SOM!', 'info');
+            const audio = createAudioElement();
+            audio.currentTime = 0;
+            
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        log('✅ SUCESSO! SOM DEVE ESTAR TOCANDO AGORA!', 'success');
+                    })
+                    .catch((error) => {
+                        log(`❌ ERRO: ${error.name} - ${error.message}`, 'error');
+                    });
+            }
+        }
+
+        function stopSound() {
+            log('🛑 PARANDO SOM...', 'info');
+            if (audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+                log('✅ SOM PARADO', 'success');
+            }
+        }
+
+        function checkFile() {
+            log(`🔍 Verificando arquivo: ${SOUND_PATH}`, 'info');
+            
+            fetch(SOUND_PATH)
+                .then(response => {
+                    if (response.ok) {
+                        log(`✅ ARQUIVO ENCONTRADO! Status: ${response.status}`, 'success');
+                        log(`Tamanho: ${response.headers.get('content-length')} bytes`, 'success');
+                        log(`Tipo: ${response.headers.get('content-type')}`, 'success');
+                        
+                        const fileCheck = document.getElementById('fileCheck');
+                        fileCheck.innerHTML = `
+                            <strong>✅ Arquivo de áudio encontrado!</strong><br/>
+                            Caminho: ${SOUND_PATH}<br/>
+                            Tamanho: ${response.headers.get('content-length')} bytes<br/>
+                            Tipo: ${response.headers.get('content-type')}
+                        `;
+                    } else {
+                        log(`❌ ARQUIVO NÃO ENCONTRADO! Status: ${response.status}`, 'error');
+                        const fileCheck = document.getElementById('fileCheck');
+                        fileCheck.innerHTML = `<strong>❌ Arquivo não encontrado em ${SOUND_PATH}</strong>`;
+                    }
+                })
+                .catch(error => {
+                    log(`❌ ERRO AO VERIFICAR: ${error.message}`, 'error');
+                });
+        }
+
+        // Verificar arquivo ao carregar
+        window.addEventListener('load', () => {
+            log('🚀 Página carregada', 'success');
+            checkFile();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+[
+  {
+    "city": "São Paulo",
+    "neighborhoods": [
+      { "name": "Centro", "delivery_fee": 8.00 },
+      { "name": "Vila Mariana", "delivery_fee": 10.00 },
+      { "name": "Pinheiros", "delivery_fee": 12.00 },
+      { "name": "Zona Leste", "delivery_fee": 15.00 },
+      { "name": "Zona Oeste", "delivery_fee": 14.00 }
+    ]
+  },
+  {
+    "city": "Rio de Janeiro",
+    "neighborhoods": [
+      { "name": "Centro", "delivery_fee": 9.00 },
+      { "name": "Copacabana", "delivery_fee": 12.00 },
+      { "name": "Leblon", "delivery_fee": 14.00 },
+      { "name": "Zona Sul", "delivery_fee": 11.00 },
+      { "name": "Zona Norte", "delivery_fee": 10.00 }
+    ]
+  },
+  {
+    "city": "Belo Horizonte",
+    "neighborhoods": [
+      { "name": "Centro", "delivery_fee": 7.00 },
+      { "name": "Savassi", "delivery_fee": 9.00 },
+      { "name": "Funcionários", "delivery_fee": 8.50 },
+      { "name": "Zona Sul", "delivery_fee": 10.00 },
+      { "name": "Zona Norte", "delivery_fee": 9.00 }
+    ]
+  }
+]

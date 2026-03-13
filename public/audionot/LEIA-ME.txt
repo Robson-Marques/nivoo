@@ -1,0 +1,34 @@
+INSTRUÇÕES - ARQUIVO DE ÁUDIO PARA NOTIFICAÇÕES
+================================================
+
+Pasta: public/audionot/
+
+1. Coloque seu arquivo de áudio nesta pasta
+2. Renomeie o arquivo para: notification.mp3
+   (ou outro formato: .wav, .ogg)
+
+COMO FAZER:
+-----------
+
+1. Copie seu arquivo de áudio
+2. Cole nesta pasta (public/audionot/)
+3. Renomeie para "notification.mp3"
+
+EXEMPLO:
+--------
+- Se o arquivo é "Friend Request.mp3"
+- Copie para: public/audionot/
+- Renomeie para: notification.mp3
+
+O SISTEMA VAI PROCURAR POR:
+---------------------------
+/audionot/notification.mp3
+
+QUANDO O ÁUDIO TOCA:
+-------------------
+- Quando chega uma notificação de novo pedido
+- O som toca bem ALTO
+- O som fica repedindo em LOOP
+- Quando o usuário vê a notificação, o som PARA
+
+Pronto! O sistema vai reproduzir o áudio automaticamente nas notificações.

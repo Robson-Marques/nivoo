@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔊 Som 100% - Diagnóstico Total</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #00d4ff;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #0f1929;
+      border: 3px solid #00d4ff;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 0 30px rgba(0,212,255,0.3);
+    }
+    h1 {
+      color: #00ff88;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 28px;
+      text-shadow: 0 0 10px #00ff88;
+    }
+    .subtitle {
+      text-align: center;
+      color: #ffaa00;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .status {
+      background: #1a1a2e;
+      border-left: 5px solid #ff4444;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .status.warning { border-left-color: #ffaa00; }
+    .status.success { border-left-color: #00ff88; }
+    .check-list {
+      background: #1a1a2e;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      border-left: 5px solid #ff9933;
+    }
+    .check-item {
+      margin: 8px 0;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .check-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #2a2a4e;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    button:hover {
+      background: linear-gradient(135deg, #00ffcc 0%, #00bbdd 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,212,255,0.4);
+    }
+    button:active { transform: scale(0.98); }
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .log {
+      background: #000;
+      border: 2px solid #00ff88;
+      border-radius: 8px;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      color: #00ff88;
+      line-height: 1.6;
+      margin: 20px 0;
+    }
+    .log-line {
+      margin: 4px 0;
+      padding: 2px 0;
+    }
+    .error { color: #ff4444; }
+    .warning { color: #ffaa00; }
+    .info { color: #00d4ff; }
+    .success { color: #00ff88; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔊 DIAGNÓSTICO FINAL - ÁUDIO</h1>
+    <div class="subtitle">Se você ouve os sons abaixo, o problema é do arquivo MP3</div>
+
+    <div class="status warning">
+      <strong>⚠️ SITUAÇÃO:</strong><br>
+      Você vê logs "SOM TOCANDO" mas NÃO ouve nada?<br>
+      Teste os botões abaixo para descobrir a causa.
+    </div>
+
+    <div class="check-list">
+      <strong>📋 CHECKLIST DE SOM:</strong>
+      <div class="check-item">
+        <div class="check-icon">1</div>
+        <span>Volume do Windows NÃO está em mute (ícone de som visível na taskbar)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">2</div>
+        <span>Navegador NÃO está com mute (browser não tem ícone de mute na aba)</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">3</div>
+        <span>Caixas de som/Headphones estão LIGADOS e conectados</span>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">4</div>
+        <span>Pressione os botões abaixo e ESCUTE</span>
+      </div>
+    </div>
+
+    <h2 style="color:#ffaa00; margin-top:30px;">🔧 TESTES:</h2>
+
+    <div class="button-group">
+      <button onclick="testSimpleBEEP()">🔊 BEEP Simples</button>
+      <button onclick="testHighBeep()">🔊 BEEP Alto</button>
+    </div>
+
+    <div class="button-group">
+      <button onclick="testMelody()">🎵 Melodia</button>
+      <button onclick="testDataURI()">📻 Som Base64</button>
+    </div>
+
+    <button onclick="testOriginalMP3()" style="background:linear-gradient(135deg, #00ff88 0%, #00cc99 100%);">
+      🎼 Arquivo Original (notification.mp3)
+    </button>
+
+    <button onclick="runFinalDiagnostic()" style="background:linear-gradient(135deg, #ff9933 0%, #ff6633 100%); margin-top:20px;">
+      🔍 DIAGNÓSTICO COMPLETO (IMPORTANTE!)
+    </button>
+
+    <h2 style="color:#00ff88; margin-top:30px;">📊 Saída:</h2>
+    <div class="log" id="log"></div>
+
+    <div id="results" style="display:none; background:#1a1a2e; padding:20px; margin:20px 0; border-radius:8px; border-left:5px solid #00ff88;">
+      <h3 style="color:#00ff88; margin-bottom:10px;">✅ RESULTADO FINAL:</h3>
+      <div id="resultText" style="color:#00d4ff; line-height:1.8;"></div>
+    </div>
+  </div>
+
+  <script>
+    const logDiv = document.getElementById('log');
+    let testsPassed = 0;
+    let totalTests = 0;
+
+    function addLog(msg, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line ${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logDiv.appendChild(line);
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(`[${type}]`, msg);
+    }
+
+    function testSimpleBEEP() {
+      totalTests++;
+      addLog('🔊 Testando BEEP Simples (1kHz)...', 'warning');
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        
+        osc.start(now);
+        osc.stop(now + 0.3);
+        
+        addLog('✅ BEEP iniciado - VOCÊ DEVE OUVIR UM BIP', 'success');
+        testsPassed++;
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+
+    function testHighBeep() {
+      totalTests++;
+      addLog('🔊 Testando BEEP ALTO (2kHz, volume máximo)...', 'warning');
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 2000;
+        gain.gain.setValueAtTime(0.8, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        
+        osc.start(now);
+        osc.stop(now + 0.5);
+        
+        addLog('✅ BEEP HIGH iniciado - DEVE SER BEM ALTO', 'success');
+        testsPassed++;
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+
+    function testMelody() {
+      totalTests++;
+      addLog('🎵 Tocando melodia (Dó-Ré-Mi)...', 'warning');
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const frequencias = [264, 297, 330];
+        let time = ctx.currentTime;
+        
+        frequencias.forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.2, time);
+          gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+          
+          osc.start(time);
+          osc.stop(time + 0.3);
+          
+          time += 0.35;
+        });
+        
+        addLog('✅ Melodia iniciada - VOCÊ DEVE OUVIR 3 NOTAS', 'success');
+        testsPassed++;
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+
+    function testDataURI() {
+      totalTests++;
+      addLog('📻 Testando som codificado em Base64...', 'warning');
+      
+      // Som PCM simples (1kHz tone) em Base64
+      const audioDataURI = 'data:audio/wav;base64,UklGRiYAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQIAAAAAAA==';
+      
+      const audio = new Audio(audioDataURI);
+      audio.volume = 1.0;
+      
+      audio.onplay = () => addLog('▶️ Audio iniciado', 'success');
+      audio.onerror = (e) => addLog(`❌ Erro: ${audio.error?.message}`, 'error');
+      
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => {
+            addLog('✅ Audio Base64 tocando', 'success');
+            testsPassed++;
+          })
+          .catch(err => {
+            addLog(`❌ Erro: ${err.name}`, 'error');
+          });
+      }
+    }
+
+    function testOriginalMP3() {
+      totalTests++;
+      addLog('🎼 Testando arquivo original (notification.mp3)...', 'warning');
+      
+      const audio = document.querySelector('audio') || new Audio();
+      audio.src = '/audionot/notification.mp3';
+      audio.volume = 1.0;
+      audio.currentTime = 0;
+      
+      audio.onplay = () => addLog('▶️ MP3 começou', 'success');
+      audio.onplaying = () => addLog('🎵 MP3 TOCANDO AGORA!', 'success');
+      audio.onerror = () => {
+        addLog(`❌ Erro MP3: ${audio.error?.message}`, 'error');
+      };
+      
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => {
+            addLog('✅ MP3 deve estar tocando', 'success');
+            testsPassed++;
+          })
+          .catch(err => {
+            addLog(`❌ Erro: ${err.name} - ${err.message}`, 'error');
+          });
+      }
+    }
+
+    function runFinalDiagnostic() {
+      totalTests = 0;
+      testsPassed = 0;
+      addLog('', 'info');
+      addLog('========== DIAGNÓSTICO FINAL ==========', 'warning');
+      
+      // 1. AudioContext
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        addLog(`✅ AudioContext: ${ctx.state}`, 'success');
+        addLog(`✅ Sample Rate: ${ctx.sampleRate}`, 'success');
+        totalTests++;
+        testsPassed++;
+      } catch (e) {
+        addLog(`❌ AudioContext erro: ${e.message}`, 'error');
+        totalTests++;
+      }
+
+      // 2. Arquivo MP3
+      fetch('/audionot/notification.mp3')
+        .then(r => {
+          addLog(`✅ Arquivo HTTP: ${r.status} ${r.statusText}`, 'success');
+          addLog(`✅ Content-Type: ${r.headers.get('content-type')}`, 'success');
+          addLog(`✅ Content-Length: ${r.headers.get('content-length')} bytes`, 'success');
+          totalTests++;
+          testsPassed++;
+          
+          showResults();
+        })
+        .catch(e => {
+          addLog(`❌ Fetch error: ${e.message}`, 'error');
+          totalTests++;
+          showResults();
+        });
+    }
+
+    function showResults() {
+      const resultsDiv = document.getElementById('results');
+      const resultText = document.getElementById('resultText');
+      
+      let html = '';
+      
+      if (testsPassed === totalTests && testsPassed > 0) {
+        html = `🎉 <strong>TODOS OS TESTES PASSARAM!</strong><br><br>`;
+        html += `Se AINDA NÃO ouve som, o problema é:<br>`;
+        html += `<br>`;
+        html += `❌ <strong>Volume do Windows em MUTE</strong><br>`;
+        html += `❌ <strong>Browser silenciado</strong> (F12 → Mute)<br>`;
+        html += `❌ <strong>Caixa de som desligada</strong><br>`;
+        html += `<br>`;
+        html += `<strong>SOLUÇÃO:</strong> Verifique as configurações acima e tente novamente.`;
+      } else {
+        html = `⚠️ <strong>ALGUNS TESTES FALHARAM</strong><br><br>`;
+        html += `Testes: ${testsPassed}/${totalTests}<br>`;
+        html += `Se os beeps não tocam, há problema com a saída de áudio do seu PC.`;
+      }
+      
+      resultText.innerHTML = html;
+      resultsDiv.style.display = 'block';
+    }
+
+    // Log inicial
+    addLog('✅ Página carregada', 'success');
+    addLog('', 'info');
+    addLog('🎧 Aqui você testa se seu Sistema consegue reproduzir sons', 'info');
+    addLog('', 'info');
+    addLog('📌 Se NENHUM som toca = problema no PC/navegador', 'warning');
+    addLog('📌 Se Web Audio toca mas MP3 não = arquivo corrompido', 'warning');
+  </script>
+
+  <audio style="display:none;"></audio>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔊 Debug Áudio - DeliveryMax</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #0f3460;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    h1 {
+      color: #00d4ff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #0f3460;
+      border-left: 4px solid #00d4ff;
+      border-radius: 6px;
+    }
+    .section h2 {
+      color: #00d4ff;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background: #00d4ff;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    button:hover { background: #00a8cc; }
+    button:active { transform: scale(0.98); }
+    .log {
+      background: #1a1a2e;
+      border: 1px solid #00d4ff;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 10px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      height: 250px;
+      overflow-y: auto;
+      color: #00ff00;
+      line-height: 1.5;
+    }
+    .log-line { margin: 3px 0; }
+    .error { color: #ff4444; }
+    .success { color: #00ff00; }
+    .info { color: #00d4ff; }
+    .warning { color: #ffaa00; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔊 DEBUG ÁUDIO - DeliveryMax</h1>
+    
+    <div class="section">
+      <h2>1️⃣ Verificar Arquivo MP3</h2>
+      <button onclick="checkAudioFile()">📥 Verificar Arquivo</button>
+    </div>
+    
+    <div class="section">
+      <h2>2️⃣ Testar Som Direto</h2>
+      <button onclick="testDirectSound()">🔊 TOCAR OM (Direto)</button>
+      <button onclick="testWithDelay()">⏱️ TOCAR COM ESPERA 500ms</button>
+    </div>
+
+    <div class="section">
+      <h2>3️⃣ Testar Simulando Notificação</h2>
+      <button onclick="simulateNotification()">🔔 Simular Notificação</button>
+      <button onclick="testAudioContext()">🎛️ Testar Web Audio API</button>
+    </div>
+
+    <div class="section">
+      <h2>4️⃣ Debug Automático</h2>
+      <button onclick="runFullDiagnostic()">🔍 DIAGNÓSTICO COMPLETO</button>
+      <button onclick="testSystemAudio()">🔗 Testar Som do Sistema</button>
+      <button onclick="multiBeepa()">📢 Beeps Variados</button>
+      <button onclick="clearLog()">🗑️ Limpar Logs</button>
+    </div>
+
+    <div class="section">
+      <h2>📊 Console de Saída:</h2>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <audio id="notification-audio" src="/audionot/notification.mp3" preload="auto" style="display:none;"></audio>
+
+  <script>
+    const logDiv = document.getElementById('log');
+
+    function addLog(msg, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line ${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logDiv.appendChild(line);
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(`[${type}]`, msg);
+    }
+
+    function clearLog() {
+      logDiv.innerHTML = '';
+      addLog('Log limpo', 'info');
+    }
+
+    async function checkAudioFile() {
+      addLog('🔍 Verificando arquivo de áudio...', 'info');
+      try {
+        const response = await fetch('/audionot/notification.mp3');
+        if (response.ok) {
+          const size = response.headers.get('content-length');
+          const contentType = response.headers.get('content-type');
+          addLog(`✅ Arquivo encontrado`, 'success');
+          addLog(`📊 Tamanho: ${size} bytes`, 'info');
+          addLog(`📄 Content-Type: ${contentType}`, 'info');
+        } else {
+          addLog(`❌ Status HTTP: ${response.status}`, 'error');
+        }
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+
+    function testDirectSound() {
+      addLog('🔊 Testando som direto...', 'info');
+      const audio = document.getElementById('notification-audio');
+      
+      if (!audio) {
+        addLog('❌ Elemento audio não encontrado!', 'error');
+        return;
+      }
+
+      addLog(`Audio ID: ${audio.id}`, 'info');
+      addLog(`Audio SRC: ${audio.src}`, 'info');
+      addLog(`Audio Volume: ${audio.volume}`, 'info');
+
+      audio.volume = 1.0;
+      audio.currentTime = 0;
+
+      audio.onplay = () => addLog('▶️ EVENTO: play', 'success');
+      audio.onplaying = () => addLog('🎵 EVENTO: playing - SOM TOCANDO', 'success');
+      audio.onended = () => addLog('🛑 EVENTO: ended', 'info');
+      audio.onerror = (e) => addLog(`❌ ERRO: ${audio.error?.message}`, 'error');
+
+      const promise = audio.play();
+      if (promise !== undefined) {
+        promise
+          .then(() => addLog('✅ Promise sucesso - Som toca', 'success'))
+          .catch(err => addLog(`❌ Promise erro: ${err.name} - ${err.message}`, 'error'));
+      } else {
+        addLog('✅ play() foi chamado (sem promise)', 'success');
+      }
+    }
+
+    function testWithDelay() {
+      addLog('⏱️ Testando com espera de 500ms...', 'info');
+      
+      // Simular primeiro clique
+      const event = new MouseEvent('click', { bubbles: true });
+      document.dispatchEvent(event);
+      addLog('✅ Evento de clique simulado', 'success');
+
+      setTimeout(() => {
+        const audio = document.getElementById('notification-audio');
+        audio.volume = 1.0;
+        audio.currentTime = 0;
+        
+        const promise = audio.play();
+        if (promise) {
+          promise
+            .then(() => addLog('✅ SOM TOCOU!', 'success'))
+            .catch(err => addLog(`❌ Error: ${err.name}`, 'error'));
+        }
+      }, 500);
+    }
+
+    function simulateNotification() {
+      addLog('🔔 Simulando notificação...', 'warning');
+      
+      // Primeiro clique
+      document.addEventListener('click', () => {
+        addLog('Clique registrado', 'info');
+      }, { once: true });
+
+      // Disparar clique
+      const clickEvent = new MouseEvent('click', { bubbles: true });
+      document.dispatchEvent(clickEvent);
+
+      // Tocar som após 100ms
+      setTimeout(() => {
+        const audio = document.getElementById('notification-audio');
+        audio.volume = 1.0;
+        audio.currentTime = 0;
+        
+        addLog('🎵 Iniciando reprodução...', 'warning');
+        const promise = audio.play();
+        
+        if (promise !== undefined) {
+          promise
+            .then(() => {
+              addLog('✅ SOM TOCANDO AGORA', 'success');
+            })
+            .catch(err => {
+              addLog(`❌ Bloqueado: ${err.name}`, 'error');
+              addLog('Tentando beep alternativo...', 'warning');
+              tryBeep();
+            });
+        }
+      }, 100);
+    }
+
+    function tryBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.frequency.value = 1000;
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        
+        osc.start(now);
+        osc.stop(now + 0.1);
+        
+        addLog('🔊 Beep de fallback tocado', 'success');
+      } catch (e) {
+        addLog(`❌ Beep erro: ${e.message}`, 'error');
+      }
+    }
+
+    function testAudioContext() {
+      addLog('🎛️ Testando Web Audio API...', 'info');
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        addLog(`✅ AudioContext criado`, 'success');
+        addLog(`📊 State: ${ctx.state}`, 'info');
+        addLog(`📊 Sample Rate: ${ctx.sampleRate}`, 'info');
+        
+        tryBeep();
+      } catch (e) {
+        addLog(`❌ Erro: ${e.message}`, 'error');
+      }
+    }
+
+    async function runFullDiagnostic() {
+      addLog('=== INICIANDO DIAGNÓSTICO COMPLETO ===', 'warning');
+      
+      // 1. Verificar arquivo
+      addLog('1️⃣ Verificando arquivo...', 'info');
+      try {
+        const response = await fetch('/audionot/notification.mp3');
+        addLog(`✅ HTTP ${response.status}`, 'success');
+      } catch (e) {
+        addLog(`❌ Fetch error: ${e.message}`, 'error');
+        return;
+      }
+
+      // 2. Verificar elemento
+      addLog('2️⃣ Verificando elemento audio...', 'info');
+      const audio = document.getElementById('notification-audio');
+      if (!audio) {
+        addLog('❌ Audio element não encontrado', 'error');
+        return;
+      }
+      addLog(`✅ Audio element found: ${audio.id}`, 'success');
+      addLog(`✅ SRC: ${audio.src}`, 'success');
+
+      // 3. Testar canPlayType
+      addLog('3️⃣ Testando compatibilidade...', 'info');
+      const canPlay = audio.canPlayType('audio/mpeg');
+      addLog(`✅ canPlayType: ${canPlay}`, 'success');
+
+      // 4. Preparar com clique
+      addLog('4️⃣ Preparando com clique simulado...', 'info');
+      const clickEvent = new MouseEvent('click', { bubbles: true });
+      document.dispatchEvent(clickEvent);
+      addLog('✅ Clique simulado', 'success');
+
+      // 5. Tocar
+      addLog('5️⃣ Tocando som...', 'warning');
+      audio.volume = 1.0;
+      audio.currentTime = 0;
+
+      const promise = audio.play();
+      if (promise !== undefined) {
+        try {
+          await promise;
+          addLog('✅ ✅ ✅ SOM TOCANDO AGORA ✅ ✅ ✅', 'success');
+        } catch (err) {
+          addLog(`❌ Erro: ${err.name} - ${err.message}`, 'error');
+          addLog('Tentando fallback beep...', 'warning');
+          tryBeep();
+        }
+      }
+
+      addLog('=== DIAGNÓSTICO CONCLUÍDO ===', 'warning');
+    }
+
+    function testSystemAudio() {
+      addLog('=== TESTE SISTEMA DE ÁUDIO ===', 'warning');
+      
+      // 1. Verificar mute do navegador
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      addLog(`📊 AudioContext State: ${audioContext.state}`, 'info');
+      addLog(`📊 Sample Rate: ${audioContext.sampleRate} Hz`, 'info');
+      
+      // 2. Tentar com volume variado
+      addLog('🔊 Testando volume 100%', 'warning');
+      const osc1 = audioContext.createOscillator();
+      const gain1 = audioContext.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioContext.destination);
+      
+      const now = audioContext.currentTime;
+      gain1.gain.setValueAtTime(0.5, now);
+      osc1.frequency.value = 1000;
+      osc1.start(now);
+      osc1.stop(now + 0.5);
+      
+      addLog('✅ Som 1kHz tocou por 0.5s', 'success');
+    }
+
+    function multiBeepa() {
+      addLog('📢 Tocando beeps variados (teste de diagnóstico)...', 'warning');
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      const frequencias = [440, 660, 880, 1000, 1200];
+      let delay = 0;
+      
+      frequencias.forEach((freq, idx) => {
+        setTimeout(() => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          const now = ctx.currentTime;
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          
+          osc.start(now);
+          osc.stop(now + 0.2);
+          
+          addLog(`🔊 Beep #${idx+1} - ${freq}Hz`, 'success');
+        }, delay);
+        delay += 250;
+      });
+      
+      addLog('Você deve ouvir 5 beeps de diferentes alturas', 'info');
+    }
+
+    // Log inicial
+    addLog('✅ Página carregada', 'success');
+    addLog('Use os botões acima para testar', 'info');
+    
+    // CHECKLIST AUTOMÁTICO
+    addLog('', 'info');
+    addLog('⚠️ ANTES DE TESTAR - VERIFIQUE:', 'warning');
+    addLog('1. Volume do Windows está ligado?', 'info');
+    addLog('2. Ícone de volume não tem SOM MUDO?', 'info');
+    addLog('3. Caixas de som/headset conectadas?', 'info');
+    addLog('4. Browser não está silenciado (F12 → Mute)?', 'info');
+  </script>
+</body>
+</html>

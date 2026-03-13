@@ -1,0 +1,16 @@
+city,neighborhood,delivery_fee
+São Paulo,Centro,8.00
+São Paulo,Vila Mariana,10.00
+São Paulo,Pinheiros,12.00
+São Paulo,Zona Leste,15.00
+São Paulo,Zona Oeste,14.00
+Rio de Janeiro,Centro,9.00
+Rio de Janeiro,Copacabana,12.00
+Rio de Janeiro,Leblon,14.00
+Rio de Janeiro,Zona Sul,11.00
+Rio de Janeiro,Zona Norte,10.00
+Belo Horizonte,Centro,7.00
+Belo Horizonte,Savassi,9.00
+Belo Horizonte,Funcionários,8.50
+Belo Horizonte,Zona Sul,10.00
+Belo Horizonte,Zona Norte,9.00

@@ -1,0 +1,108 @@
+/* ProductConfigurator.module.css */
+/* Estilos para sistema de configurações dinâmicas */
+
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-label .required-indicator {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.config-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.config-option:hover {
+  background-color: #f9fafb;
+}
+
+.config-option-price {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+.config-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.config-error-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #dc2626;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.config-error-message {
+  font-size: 0.75rem;
+  color: #7f1d1d;
+}
+
+.price-summary {
+  padding: 0.75rem;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.375rem;
+  margin-top: 1rem;
+}
+
+.price-summary-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e3a8a;
+}
+
+.price-summary-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .config-option {
+    padding: 0.375rem;
+  }
+
+  .config-label {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Acessibilidade */
+.config-option:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+input[type="text"],
+input[type="number"] {
+  font-size: 1rem !important; /* Prevent zoom on iOS */
+}
